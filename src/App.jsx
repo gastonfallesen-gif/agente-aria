@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect } from "react";
-
 const EBOOK = {
   title: "IA para el Trabajo",
   subtitle: "Guía práctica para hacer más con menos tiempo",
@@ -108,14 +107,14 @@ export default function AgenteVentas() {
     setMessages(newMessages);
     setLoading(true);
     try {
-      const res = await fetch("https://api.openai.com/v1/chat/completions", {
+      const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${import.meta.env.VITE_OPENAI_KEY}`,
+          "Authorization": `Bearer ${import.meta.env.VITE_GROQ_KEY}`,
         },
         body: JSON.stringify({
-          model: "gpt-4o-mini",
+          model: "llama-3.3-70b-versatile",
           max_tokens: 1000,
           messages: [
             { role: "system", content: SYSTEM_PROMPT },
