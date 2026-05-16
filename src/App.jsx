@@ -112,7 +112,7 @@ export default function AgenteVentas() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${import.meta.env.CLAVE_DE_OPENAI}`,
+          "Authorization": `Bearer ${import.meta.env.VITE_OPENAI_KEY}`,
         },
         body: JSON.stringify({
           model: "gpt-4o-mini",
