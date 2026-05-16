@@ -19,7 +19,7 @@ const EBOOK = {
   bonus: "BONUS: Plantilla de 50 prompts para el trabajo",
 };
 
-const SYSTEM_PROMPT = `Sos Muni, una asesora de ventas cálida, inteligente y directa que vende el siguiente ebook:
+const SYSTEM_PROMPT = `Sos Aria, una asesora de ventas cálida, inteligente y directa que vende el siguiente ebook:
 
 PRODUCTO: "${EBOOK.title}"
 SUBTÍTULO: "${EBOOK.subtitle}"
@@ -30,7 +30,7 @@ BONUS: Plantilla de 50 prompts listos para el trabajo
 LO QUE APRENDEN:
 - Qué es la IA y cómo usarla sin saber programar
 - ChatGPT, Claude y Gemini: cuál usar y para qué
-- Redactar emails, informes y comunicados en minutos
+- Redactar emails, informes y coariacados en minutos
 - Planificar y organizar la semana con IA
 - Hacer presentaciones profesionales sin diseñador
 - Atender consultas automáticamente 24/7
@@ -72,7 +72,7 @@ const QUICK_REPLIES = [
 ];
 
 const TESTIMONIALS = [
-  { name: "Romina G.", role: "Empleada municipal", text: "Empecé a usar IA al segundo día de leer el capítulo 3. Mis informes me llevan la mitad del tiempo." },
+  { name: "Romina G.", role: "Empleada ariacipal", text: "Empecé a usar IA al segundo día de leer el capítulo 3. Mis informes me llevan la mitad del tiempo." },
   { name: "Martín V.", role: "Emprendedor", text: "El capítulo del agente automatizado me cambió el negocio. Ahora tengo respuestas automáticas en WhatsApp." },
   { name: "Laura P.", role: "Docente", text: "Pensé que era muy difícil. Pero está explicado tan simple que en una tarde ya lo estaba usando." },
 ];
@@ -81,7 +81,7 @@ export default function AgenteVentas() {
   const [messages, setMessages] = useState([
     {
       role: "assistant",
-      content: `¡Hola! 👋 Soy Muni, tu asesora. Vi que te interesa la IA aplicada al trabajo... ¿En qué trabajás o qué tipo de tareas te gustaría automatizar?`,
+      content: `¡Hola! 👋 Soy Aria, tu asesora. Vi que te interesa la IA aplicada al trabajo... ¿En qué trabajás o qué tipo de tareas te gustaría automatizar?`,
     },
   ]);
   const [input, setInput] = useState("");
@@ -108,18 +108,23 @@ export default function AgenteVentas() {
     setMessages(newMessages);
     setLoading(true);
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
+      const res = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${import.meta.env.CLAVE_DE_OPENAI}`,
+        },
         body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
+          model: "gpt-4o-mini",
           max_tokens: 1000,
-          system: SYSTEM_PROMPT,
-          messages: newMessages.map(m => ({ role: m.role, content: m.content })),
+          messages: [
+            { role: "system", content: SYSTEM_PROMPT },
+            ...newMessages.map(m => ({ role: m.role, content: m.content })),
+          ],
         }),
       });
       const data = await res.json();
-      const reply = data.content?.[0]?.text || "Disculpá, hubo un error. ¿Podés repetir?";
+      const reply = data.choices?.[0]?.message?.content || "Disculpá, hubo un error. ¿Podés repetir?";
       setMessages([...newMessages, { role: "assistant", content: reply }]);
     } catch {
       setMessages([...newMessages, { role: "assistant", content: "Hubo un problema. ¿Podés intentar de nuevo?" }]);
@@ -339,7 +344,7 @@ export default function AgenteVentas() {
               }} />
             </div>
             <div>
-              <div style={{ fontWeight: 700, fontSize: 14 }}>Muni — Asesora Virtual</div>
+              <div style={{ fontWeight: 700, fontSize: 14 }}>Aria — Asesora Virtual</div>
               <div style={{ fontSize: 11, color: "rgba(255,255,255,0.7)" }}>● Disponible ahora · Responde al instante</div>
             </div>
           </div>
